@@ -48,8 +48,6 @@ void handle_commands(StaticJsonDocument<200> doc) {
 
 void loop() 
 { 
-  delay(100);
-
   // Wait for card, exit if no card
   if (!mfrc.PICC_IsNewCardPresent()) return;
   if (!mfrc.PICC_ReadCardSerial()) return;
