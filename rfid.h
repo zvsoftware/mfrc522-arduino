@@ -8,6 +8,15 @@
 MFRC522::MIFARE_Key key;
 MFRC522::StatusCode status;
 
+String remove_non_digits(String str) {
+  String out = "";
+  for (int i = 0; i < str.length(); i++) {
+    if (!isDigit(str.charAt(i))) continue;
+    out += str.charAt(i);
+  }
+
+  return out;
+}
 
 String rfid_read(MFRC522* mfrc)
 { 
@@ -41,30 +50,25 @@ String rfid_read(MFRC522* mfrc)
       Serial.println("Card OK");
   }
 
-  return String((char*)buffer).substring(0, 16);
+  String str = String((char*)buffer).substring(0, 16);
+  return remove_non_digits(str);
 }
 
 
-void rfid_write(MFRC522* mfrc, String id, byte block = 1) {
+void rfid_write(MFRC522* mfrc, String data, byte block = 1) {
+  if (data.length() > RFID_MAX_BLOCK_SIZE) return;
   // mfrc->PICC_DumpDetailsToSerial(&(mfrc->uid)); 
   
   // Waits 30 seconds dor data entry via Serial 
-  Serial.setTimeout(30000L) ;     
-  Serial.println(F("Enter the data to be written with the '#' character at the end \n[maximum of 16 characters]:"));
-
   // Prepare the key - all keys are set to FFFFFFFFFFFFh
   for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
 
   // Buffer for storing data to write
-  byte buffer[RFID_MAX_BLOCK_SIZE] = "";
-  
-  for (int i = 0; i < RFID_SIZE_BUFFER; i++) buffer[i] = id[i];
-
-  // Void positions that are left in the buffer will be filled with whitespace
-  for(byte i = id.length(); i < RFID_MAX_BLOCK_SIZE; i++) buffer[i] = ' ';
- 
-  String str = (char*)buffer;
-  Serial.println(str);
+  byte buffer[data.length()] = "";
+  if (data.length() > 0) {
+    for (int i = 0; i < RFID_SIZE_BUFFER; i++) buffer[i] = data.charAt(i);
+  }
+  Serial.println(data);
 
   // Auth for block
   status = mfrc->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A,
@@ -84,7 +88,12 @@ void rfid_write(MFRC522* mfrc, String id, byte block = 1) {
     return;
   }
   else{
+    Serial.println("{ \"data\": \"" + data + "\"}");
     Serial.println("Write success");
   }
+}
+
+void clear_rfid(MFRC522* mfrc) {
+  rfid_write(mfrc, "");
 }
 
