@@ -1,13 +1,8 @@
 #include <ArduinoJson.h>
 
 StaticJsonDocument<200> listen_for_commands() {
-  int wait = 10000;
+  int wait = 1000;
   int i = 0;
-
-  
-  if (i >= wait) {
-    Serial.println("timed out");
-  }
 
   // Read the incoming data
   String json = Serial.readStringUntil('\n');
@@ -18,6 +13,9 @@ StaticJsonDocument<200> listen_for_commands() {
     i += 100;
   }
 
+  if (i >= wait) {
+    Serial.println("timed out");
+  }
 
   // Parse the JSON data
   StaticJsonDocument<200> doc;

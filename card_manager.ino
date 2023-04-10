@@ -3,8 +3,8 @@
 #include "serial.h"
 
 // SS_PIN IS BOARD DEPENDANT!!
-#define SS_PIN 10 
-#define RST_PIN  5
+#define SS_PIN 53
+#define RST_PIN  49
 
 MFRC522 mfrc(SS_PIN, RST_PIN);
 
