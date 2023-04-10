@@ -2,9 +2,13 @@
 #include "rfid.h"
 #include "serial.h"
 
-// SS_PIN IS BOARD DEPENDANT!!
-#define SS_PIN 53
-#define RST_PIN  49
+// #define RST_PIN  49 // Arduino Mega
+// #define SS_PIN 53 // Arduino Mega
+
+#define RST_PIN  5 // Arduino Uno
+#define SS_PIN 10 // Arduino Uno
+
+
 
 MFRC522 mfrc(SS_PIN, RST_PIN);
 
