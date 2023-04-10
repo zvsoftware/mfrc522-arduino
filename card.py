@@ -2,7 +2,7 @@ from serial import Serial
 import json
 import sys
 
-port = '/dev/ttyACM0'
+port = '/dev/ttyACM1'
 baud = 9600
 
 def get_method():
@@ -11,11 +11,8 @@ def get_method():
 def new_port() -> Serial:
     return Serial(port, baud, timeout=10)
 
-def serial_port(func: callable) -> callable:
-    """
-    Decorator for functions that interact with the serial port
-    @returns: callable
-    """
+
+def serial_port(func: callable):
     def wrapper():
         with new_port() as ser:
             ser.flush()
@@ -35,7 +32,7 @@ def read_card(ser: Serial) -> str:
     line = ser.readline()
     card = json.loads(line)
     if card:
-        print(card)
+        print(json.dumps(card))
         return True
     
     return False
