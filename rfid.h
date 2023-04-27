@@ -46,9 +46,6 @@ String rfid_read(MFRC522* mfrc)
     Serial.println(mfrc->GetStatusCodeName(status));
     return;
   }
-  else{
-      Serial.println("Card OK");
-  }
 
   String str = String((char*)buffer).substring(0, 16);
   return remove_non_digits(str);
@@ -59,20 +56,18 @@ void rfid_write(MFRC522* mfrc, String data, byte block = 1) {
   if (data.length() > RFID_MAX_BLOCK_SIZE) return;
   // mfrc->PICC_DumpDetailsToSerial(&(mfrc->uid)); 
   
-  // Waits 30 seconds dor data entry via Serial 
   // Prepare the key - all keys are set to FFFFFFFFFFFFh
   for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
 
   // Buffer for storing data to write
-  byte buffer[data.length()] = "";
+  char buffer[data.length()] = "";
   if (data.length() > 0) {
+    
     for (int i = 0; i < RFID_SIZE_BUFFER; i++) buffer[i] = data.charAt(i);
   }
-  Serial.println(data);
 
   // Auth for block
-  status = mfrc->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A,
-                                    block, &key, &(mfrc->uid));
+  status = mfrc->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, block, &key, &(mfrc->uid));
 
   if (status != MFRC522::STATUS_OK) {
     Serial.print(F("PCD_Authenticate() failed: "));

@@ -1,14 +1,24 @@
 from serial import Serial
+from serial.tools import list_ports
+
 import json
 import sys
 
-port = '/dev/ttyACM1'
 baud = 9600
 
+def select_controller_port():
+    for port, desc, hwid in list_ports.comports():
+        # print(f'{ port }, { desc }, { hwid }')
+        if 'ACM' in port:
+            print(f'Using { port }')
+            return port
+
 def get_method():
-    return sys.argv[1].lower()
+    if len(sys.argv) > 1:
+        return sys.argv[1].lower()
 
 def new_port() -> Serial:
+    port = select_controller_port()
     return Serial(port, baud, timeout=10)
 
 
@@ -76,3 +86,7 @@ if __name__ == "__main__":
 
     elif method == "--clear" or method == "-c":
         clear_card()
+    
+    else:
+        print('No method selected.')
+        print('Use --read, --write, or --clear')

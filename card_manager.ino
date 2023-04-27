@@ -2,11 +2,11 @@
 #include "rfid.h"
 #include "serial.h"
 
-// #define RST_PIN  49 // Arduino Mega
-// #define SS_PIN 53 // Arduino Mega
+#define RST_PIN  49 // Arduino Mega
+#define SS_PIN 53 // Arduino Mega
 
-#define RST_PIN  5 // Arduino Uno
-#define SS_PIN 10 // Arduino Uno
+// #define RST_PIN  5 // Arduino Uno
+// #define SS_PIN 10 // Arduino Uno
 
 
 
@@ -23,18 +23,6 @@ void setup()
   Serial.println();
 }
 
-void write_random_id() {
-  String id = "";
-  randomSeed(analogRead(0));
-
-  for (int i = 0; i < 16; i++) {
-    id += random(0, 10);
-  }
-
-  rfid_write(&mfrc, id);
-}
-
-
 void handle_commands(StaticJsonDocument<200> doc) {
   // Retrieve values from the JSON document
 
@@ -43,7 +31,9 @@ void handle_commands(StaticJsonDocument<200> doc) {
 
   // Do something based on the values
   if (write) {
-    write_random_id();
+    String id = doc["id"];
+    Serial.println(id);
+    rfid_write(&mfrc, id);
   } 
   else if (clear) {
     clear_rfid(&mfrc);
