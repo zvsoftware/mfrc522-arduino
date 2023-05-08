@@ -1,9 +1,11 @@
 #include <ArduinoJson.h>
 
+StaticJsonDocument<200> doc;
+int wait;
+int i;
 StaticJsonDocument<200> listen_for_commands() {
-  int wait = 200;
-  int i = 0;
-
+  wait = 300;
+  i = 0;
   // Read the incoming data
   String json = Serial.readStringUntil('\n');
 
@@ -14,15 +16,6 @@ StaticJsonDocument<200> listen_for_commands() {
   }
 
   // Parse the JSON data
-  StaticJsonDocument<200> doc;
   DeserializationError error = deserializeJson(doc, json);
-
-  // // Check for parsing errors
-  // if (error) {
-  //   Serial.print("Error: ");
-  //   Serial.println(error.c_str());
-  //   return;
-  // }
-
   return doc;
 }

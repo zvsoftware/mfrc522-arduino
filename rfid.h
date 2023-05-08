@@ -83,7 +83,7 @@ void rfid_write(MFRC522* mfrc, String data, byte block = 1) {
     return;
   }
   else{
-    Serial.println("{ \"data\": \"" + data + "\"}");
+    Serial.println("{ \"id\": \"" + data + "\"}");
     Serial.println("Write success");
   }
 }
