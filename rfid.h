@@ -36,7 +36,7 @@ String rfid_read(MFRC522* mfrc)
   if (status != MFRC522::STATUS_OK) {
     Serial.print(F("Authentication failed: "));
     Serial.println(mfrc->GetStatusCodeName(status));
-    return;
+    return "";
   }
 
   // Read data from block
@@ -44,7 +44,7 @@ String rfid_read(MFRC522* mfrc)
   if (status != MFRC522::STATUS_OK) {
     Serial.print(F("Reading failed: "));
     Serial.println(mfrc->GetStatusCodeName(status));
-    return;
+    return "";
   }
 
   String str = String((char*)buffer).substring(0, 16);
@@ -60,10 +60,10 @@ void rfid_write(MFRC522* mfrc, String data, byte block = 1) {
   for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
 
   // Buffer for storing data to write
-  char buffer[data.length()] = "";
+  byte buffer[data.length()] = "";
   if (data.length() > 0) {
     
-    for (int i = 0; i < RFID_SIZE_BUFFER; i++) buffer[i] = data.charAt(i);
+    for (int i = 0; i < RFID_SIZE_BUFFER; i++) buffer[i] = (byte)data.charAt(i);
   }
 
   // Auth for block
